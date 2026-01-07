@@ -17,7 +17,7 @@ export const APP_LIST: NavItem[] = [
     title: '数独游戏',
     description: '经典的数独逻辑挑战。提供多种难度，洁净的界面让你专注于思考。',
     url: 'https://game-sudoku.oohcode.com',
-    icon: 'fa-solid fa-grid-view',
+    icon: 'fa-solid fa-table-cells',
     category: 'Game',
     color: 'from-emerald-500 to-teal-600',
     tags: ['益智', '逻辑', '经典']
