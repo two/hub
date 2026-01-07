@@ -23,6 +23,16 @@ export const APP_LIST: NavItem[] = [
     tags: ['益智', '逻辑', '经典']
   },
   {
+    id: 'snake',
+    title: '贪吃蛇游戏',
+    description: '经典的贪吃蛇挑战，通过灵活的移动吃掉食物并不断成长。极简设计带来最纯粹的乐趣。',
+    url: 'https://game-snake.oohcode.com',
+    icon: 'fa-solid fa-worm',
+    category: 'Game',
+    color: 'from-lime-500 to-green-600',
+    tags: ['经典', '敏捷', '趣味']
+  },
+  {
     id: 'coming-soon-1',
     title: '敬请期待',
     description: '更多精彩的小游戏和高效工具正在路上，敬请关注我们的最新动态。',
