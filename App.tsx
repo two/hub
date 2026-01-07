@@ -2,20 +2,24 @@
 import React, { useState } from 'react';
 import { APP_LIST } from './constants';
 import AppCard from './components/AppCard';
+import { NavItem } from './types';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [layoutMode, setLayoutMode] = useState<'grid' | 'list'>('grid');
+  const [selectedApp, setSelectedApp] = useState<NavItem | null>(null);
 
   const filteredApps = APP_LIST.filter(app => 
     app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     app.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const closeModal = () => setSelectedApp(null);
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-200 selection:bg-indigo-500/30">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-200 selection:bg-indigo-500/30 relative">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass-effect">
+      <header className="sticky top-0 z-40 glass-effect">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center space-x-3 group cursor-default">
@@ -88,7 +92,12 @@ const App: React.FC = () => {
                 : "flex flex-col gap-4 max-w-4xl mx-auto"
               }>
                 {filteredApps.map(app => (
-                  <AppCard key={app.id} item={app} layoutMode={layoutMode} />
+                  <AppCard 
+                    key={app.id} 
+                    item={app} 
+                    layoutMode={layoutMode} 
+                    onClick={() => setSelectedApp(app)}
+                  />
                 ))}
               </div>
             ) : (
@@ -106,6 +115,70 @@ const App: React.FC = () => {
           </div>
         </section>
       </main>
+
+      {/* Detail Modal */}
+      {selectedApp && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-opacity">
+          <div 
+            className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`h-2 bg-gradient-to-r ${selectedApp.color}`}></div>
+            
+            <div className="p-6 md:p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedApp.color} flex items-center justify-center text-white text-3xl shadow-xl shadow-indigo-900/20`}>
+                  <i className={selectedApp.icon}></i>
+                </div>
+                <button 
+                  onClick={closeModal}
+                  className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors"
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-black text-white">{selectedApp.title}</h2>
+                  <span className="px-2 py-0.5 bg-slate-800 text-slate-500 text-[10px] font-bold rounded uppercase tracking-wider">
+                    {selectedApp.category}
+                  </span>
+                </div>
+                <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                  {selectedApp.description}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-8">
+                {selectedApp.tags.map(tag => (
+                  <span key={tag} className="px-2.5 py-1 bg-slate-950 text-slate-500 text-xs font-bold rounded-lg border border-slate-800 uppercase">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {selectedApp.url !== '#' ? (
+                <a 
+                  href={selectedApp.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-center font-black rounded-2xl shadow-lg shadow-indigo-900/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  立即访问应用
+                  <i className="fa-solid fa-arrow-up-right-from-square ml-2 text-sm opacity-70"></i>
+                </a>
+              ) : (
+                <div className="w-full py-4 bg-slate-800 text-slate-500 text-center font-bold rounded-2xl border border-slate-700">
+                  开发中，敬请期待
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Backdrop Closer */}
+          <div className="absolute inset-0 -z-10" onClick={closeModal}></div>
+        </div>
+      )}
 
       <footer className="py-10 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
